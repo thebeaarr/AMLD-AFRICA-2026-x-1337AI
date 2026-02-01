@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Study Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      width: 350px;
+      min-height: 400px;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-600 to-indigo-700">
+  <div class="p-6">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-white mb-2">🎓 AI Study Assistant</h1>
+      <p class="text-purple-100 text-sm">Capture & organize your learning</p>
+    </div>
+
+    <!-- Settings Card -->
+    <div class="bg-white rounded-lg shadow-lg p-5 mb-4">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">Settings</h2>
+      
+      <div class="space-y-3">
+        <!-- API URL -->
+        <div>
+          <label for="apiUrl" class="block text-sm font-medium text-gray-700 mb-1">
+            Backend API URL
+          </label>
+          <input 
+            type="text" 
+            id="apiUrl" 
+            placeholder="http://localhost:8000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+          />
+        </div>
+
+        <!-- Save Button -->
+        <button 
+          id="saveBtn"
+          class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          Save Settings
+        </button>
+
+        <!-- Status Message -->
+        <div id="statusMsg" class="hidden text-sm text-center py-2 rounded-md"></div>
+      </div>
+    </div>
+
+    <!-- Instructions Card -->
+    <div class="bg-white rounded-lg shadow-lg p-5">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">How to Use</h2>
+      
+      <ol class="space-y-2 text-sm text-gray-700">
+        <li class="flex items-start">
+          <span class="font-bold text-purple-600 mr-2">1.</span>
+          <span>Highlight any text on a webpage</span>
+        </li>
+        <li class="flex items-start">
+          <span class="font-bold text-purple-600 mr-2">2.</span>
+          <span>Click the "Capture" button that appears</span>
+        </li>
+        <li class="flex items-start">
+          <span class="font-bold text-purple-600 mr-2">3.</span>
+          <span>AI will summarize and save it to Notion</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Stats (Optional) -->
+    <div class="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+      <div class="text-center">
+        <p class="text-purple-100 text-xs mb-1">Notes Captured Today</p>
+        <p class="text-3xl font-bold text-white" id="captureCount">0</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-4 text-center">
+      <p class="text-purple-200 text-xs">Powered by AI & Notion</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

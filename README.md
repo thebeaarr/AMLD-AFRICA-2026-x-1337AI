@@ -1,166 +1,271 @@
-# AMLD-AFRICA-2026-x-1337AI
+# AI-Powered Student Study Assistant - Chrome Extension
 
+A hackathon demo Chrome extension that captures highlighted text, summarizes it with AI, stores it in SQLite, and optionally syncs to Notion.
 
+## 🎯 What It Does
 
-# AI-Powered Structured Study Notes → Notion
+Highlight text on any webpage → Click "Capture" → AI summarizes → Saved to SQLite → Optional Notion sync ✨
 
-## 📌 Overview
+## 🏗️ Architecture
 
-This project is an **AI-assisted note-taking system** designed for students. It automatically transforms articles or learning resources into **clean, structured study notes** and stores them in a **Notion database**.
+**Primary Storage: SQLite Database**
+- All data stored locally in SQLite
+- Full control and flexibility
+- Fast queries, no API limits
+- Relational data integrity
 
-Instead of taking manual notes, students provide a source (article URL or text), and the system:
+**Optional: Notion Integration**
+- Sync notes to Notion for viewing
+- Beautiful organization interface
+- Can be completely disabled
+- Data remains in SQLite either way
 
-1. Extracts the content
-2. Uses AI to structure the knowledge
-3. Saves the result into Notion as organized, searchable notes
-
-Notion acts as the **knowledge base**, while the AI acts as the **thinking and structuring engine**.
-
----
-
-## 🎯 Problem Statement
-
-Students often:
-
-* Read long articles without retaining key ideas
-* Take unstructured or inconsistent notes
-* Lose track of sources
-
-This project solves that by:
-
-* Enforcing **structured note-taking**
-* Automatically linking notes to their original sources
-* Centralizing everything inside Notion
-
----
-
-## 🧠 Core Idea
-
-> **AI understands the content. Notion stores the knowledge.**
-
-The AI does *not* manage data persistence or organization. Its only role is to:
-
-* Understand learning content
-* Extract meaningful structure
-* Output clean, machine-readable data
-
-Notion is used strictly as a storage and organization layer.
-
----
-
-## 🏗️ System Architecture
+## 🏗️ Architecture
 
 ```
-Student Input (URL / Text)
-        ↓
-Content Extraction (Python)
-        ↓
-AI Processing (LLM)
-        ↓
-Structured JSON Output
-        ↓
-Notion API
-        ↓
-Notion Database (Study Notes)
+hackathon/
+├── backend/              # FastAPI Server
+│   ├── main.py          # API with SQLite database
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── README.md
+│
+└── extension/           # Chrome Extension
+    ├── manifest.json    # Extension config
+    ├── content.js       # Text selection handler
+    ├── background.js    # Service worker
+    ├── popup.html       # Settings UI (Tailwind)
+    ├── popup.js         # Settings logic
+    ├── styles/
+    │   └── content.css  # Button styles
+    └── icons/
+        └── *.png        # Extension icons
 ```
 
-Each step has a **single responsibility**, keeping the system simple and reliable.
+## 💾 Database Schema
 
----
+**SQLite Tables:**
+- `topics` - Subject categories and topics
+- `notes` - Captured highlights with metadata
+- `summary_points` - AI-generated bullet points
+- `keywords` - Extracted keywords for search
 
-## 📊 Notion Database Design
+## 🚀 Quick Start
 
-Each note is stored as **one page (row)** inside a Notion database.
+### Backend Setup
 
-### Database Properties
+1. **Start the FastAPI backend:**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   python main.py
+   ```
+   Backend runs on `http://localhost:8000`
 
-| Property Name | Type         | Description                   |
-| ------------- | ------------ | ----------------------------- |
-| Title         | Title        | Main topic of the note        |
-| Summary       | Text         | Concise explanation           |
-| Key Concepts  | Multi-select | Extracted keywords            |
-| Source URL    | URL          | Original article              |
-| Difficulty    | Select       | Easy / Medium / Hard          |
-| Field         | Select       | Subject area (CS, Math, etc.) |
-| Created By AI | Checkbox     | Always true                   |
-| Date Added    | Date         | Auto-generated                |
+### Extension Setup
 
-This schema is fixed and intentionally minimal.
+1. **Load in Chrome:**
+   - Open `chrome://extensions/`
+   - Enable "Developer mode" (toggle top-right)
+   - Click "Load unpacked"
+   - Select the `extension` folder
 
----
+2. **Configure:**
+   - Click extension icon in Chrome toolbar
+   - Verify API URL: `http://localhost:8000`
+   - Click "Save Settings"
 
-## 🤖 AI Output Format (Critical)
+## 📖 Usage
 
-The AI **must return valid JSON only**.
+1. **Highlight** any text on a webpage (minimum 10 characters)
+2. **Click** the "Capture" button that appears next to your selection
+3. **Done!** AI processes and saves to Notion
+4. Get a notification when complete!
 
-Example:
+## ✨ Features
 
+### Chrome Extension
+- ✅ **Text Detection**: Automatically shows "Capture" button when highlighting text
+- ✅ **SQLite Database**: Full relational storage
+- ✅ **AI Summarization**: Bullet-point summaries (mock or real LLM)
+- ✅ **Smart Classification**: Auto-categorize by subject/topic
+- ✅ **Keyword Extraction**: Automatically extract relevant keywords
+- ✅ **Optional Notion Sync**: View notes in Notion (can be disabled)
+- ✅ **RESTful API**: Query notes, topics, search data
+
+### Backend
+- ✅ **FastAPI Server**: `/capture` endpoint for processing
+- ✅ **AI Summarization**: Bullet-point summaries (mock or real LLM)
+- ✅ **Smart Classification**: Auto-categorize by subject/topic
+- ✅ **Keyword Extraction**: Automatically extract relevant keywords
+- ✅ **Notion Integration**: Save directly to database
+- ✅ **Topic Management**: Create new or use existing topics
+
+## � API Configuration
+
+### Testing Without Setup (Mock Mode)
+The extension works perfectly **without any API keys**:
+- Backend returns mock summaries
+- Perfect for demos and testing
+- No Notion/OpenAI account needed
+
+### Production Setup (Optional)
+
+Create `backend/.env` from `.env.example`:
+
+```env
+NOTION_API_KEY=secret_xxxxx
+NOTION_DATABASE_ID=xxxxx
+OPENAI_API_KEY=sk-xxxxx
+```
+
+**Notion Database:**
+1. Create integration at [Notion](https://www.notion.so/my-integrations)
+2. Create database with properties:
+   - Title (title)
+   - Subject (select)
+   - Topic (select)
+   - Keywords (multi-select)
+   - Source URL (url)
+3. Share database with integration
+
+**OpenAI (Optional):**
+- Get API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+
+## � Why SQLite + Notion?
+
+### SQLite Benefits
+- **Full Control**: Your data, your rules
+- **No Limits**: No API rate limits or quotas
+- **Fast**: Local queries are instant
+- **Offline**: Works without internet
+- **Portable**: Single file backup
+- **Queryable**: Build custom reports and analytics
+- **Relational**: Proper foreign keys and joins
+
+### Notion Benefits (Optional)
+- **Visualization**: Beautiful interface for viewing
+- **Organization**: Manual tagging and sorting
+- **Collaboration**: Share with team/study group
+- **Mobile**: Access from phone
+- **Flexibility**: Customize views and filters
+
+**Best of Both Worlds**: Store in SQLite, view in Notion!s
+
+### `POST /capture`
+Capture and process highlighted text.
+
+**Request:**
 ```json
 {
-  "title": "TCP vs UDP",
-  "summary": "TCP is connection-oriented and reliable, while UDP is connectionless and faster.",
-  "key_concepts": ["TCP", "UDP", "Networking"],
-  "difficulty": "Medium",
-  "field": "Computer Science"
+  "text": "Your highlighted text",
+  "url": "https://source.com",
+  "pageTitle": "Article Title"
 }
 ```
 
-This JSON is mapped **directly** to Notion properties.
-
----
-
-## 🗂️ Project Structure
-
-```
-ai-notion-notes/
-│
-├── main.py               # Entry point
-├── config.py             # API keys and IDs
-├── content_loader.py     # Extract content from URL or text
-├── ai_processor.py       # AI prompting and JSON parsing
-├── notion_client.py      # All Notion API logic
-└── requirements.txt
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "summary": ["Point 1", "Point 2"],
+    "subject": "Computer Science",
+    "topic": "Machine Learning",
+    "keywords": ["AI", "neural networks"],
+    "notion_url": "https://notion.so/..."
+  }
+}
 ```
 
+### `GET /topics`
+Get all existing topics from Notion.
+
+### `GET /`
+Health check endpoint.
+
+## 🎨 Tech Stack
+
+**Chrome Extension:**
+- Manifest V3
+- Vanilla JavaScript
+- Tailwind CSS (CDN)
+- Chrome Storage API
+- Notifications API
+
+**Backend:**
+- FastAPI
+- SQLite (primary database)
+- Python 3.8+
+- Notion API (optional sync)
+- OpenAI API (optional LLM)
+
+## 📖 Documentation
+
+- Backend API docs: `http://localhost:8000/docs`
+- Frontend README: `frontend/README.md`
+- Backend README: `backend/README.md`
+
+## 🎓 Use Cases
+
+- **Students**: Capture lecture content and reading materials
+- **Researchers**: Save excerpts from academic papers
+- **Lifelong Learners**: Build knowledge base from articles
+- **Professionals**: Organize work-related content
+
+## 🔧 Development & Customization
+
+### Modify Button Appearance
+Edit `extension/styles/content.css`:
+```css
+.ai-study-capture-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Change colors, size, position */
+}
+```
+
+### Customize Popup UI
+Edit `extension/popup.html` - uses Tailwind CSS classes
+
+### Change Icons
+Replace PNG files in `extension/icons/` (16x16, 48x48, 128x128)
+
+### Test Changes
+1. Make code changes
+2. Go to `chrome://extensions/`
+3. Click refresh icon on your extension
+4. Test on any webpage
+
+### Debug
+- **Content Script**: Page console (F12)
+- **Popup**: Right-click icon → Inspect
+- **Background**: chrome://extensions/ → Service worker
+
+## 🐛 Troubleshooting
+
+**Button doesn't appear:**
+- Ensure you highlighted >10 characters
+- Refresh the page after installing extension
+- Check browser console for errors (F12)
+
+**Capture fails:**
+- Verify backend is running: `http://localhost:8000`
+- Check API URL in extension settings
+- Look at Network tab in DevTools
+
+**CORS errors:**
+- Backend has CORS enabled by default
+- Ensure backend is on port 8000
+
+**Extension won't load:**
+- Make sure all files are in `extension/` folder
+- Check manifest.json syntax
+- Look at chrome://extensions/ for error messages
+
+## 📄 License
+
+MIT License - Feel free to use for your hackathon!
+
 ---
 
-## 🔁 Execution Flow
-
-1. Student submits an article URL or raw text
-2. Content is extracted into plain text
-3. AI processes the text and returns structured JSON
-4. Python maps the JSON to Notion properties
-5. A new page (note) is created inside the Notion database
-
----
-
-## 🔐 Security Considerations
-
-* Notion API tokens are stored **server-side only**
-* Tokens are never exposed to the frontend
-* The Notion integration has access only to shared pages
-
----
-
-## 🚀 Hackathon Value
-
-This project demonstrates:
-
-* Real-world AI usage
-* Clean system design
-* Practical automation
-* A usable end product
-
-It can easily be extended with:
-
-* PDF support
-* Note linking (relations)
-* Flashcards or summaries
-
----
-
-## 🧩 Key Principle
-
-> **AI thinks. Notion stores. Students learn.**
-
-This separation of concerns keeps the system scalable, understandable, and effect
+Built with ❤️ for hackathons
